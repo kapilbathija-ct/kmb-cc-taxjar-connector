@@ -24,6 +24,9 @@ async function syncToTaxProvider(order) {
   }
 
   await getTaxJarClient().createOrder(payload);
+  logger.info(
+    `Synced order ${order.id} (${payload.transaction_id}) to TaxJar.`
+  );
 }
 
 export const syncHandler = async (request, response) => {
@@ -41,6 +44,7 @@ export const syncHandler = async (request, response) => {
     doValidation(messageBody);
 
     const orderId = messageBody?.resource?.id;
+    logger.info(`Received OrderCreated message for order ${orderId}.`);
     const order = await getOrderById(orderId);
     if (order) {
       await syncToTaxProvider(order);
