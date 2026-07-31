@@ -42,7 +42,7 @@
     "serialize-error": "^11.0.3",
     "taxjar": "^4.1.0",
     "supertest": "^7.0.0",
-    "validator": "^13.12.0"
+    "validator": "^13.15.35"
   },
   "overrides": {
     "lodash": "^4.17.23"
