@@ -4,7 +4,7 @@ import { getTaxJarClient } from '../../src/clients/taxjar.client.js';
 import { taxHandler } from '../../src/controllers/tax.calculator.controller.js';
 import {
   HTTP_STATUS_BAD_REQUEST,
-  HTTP_STATUS_SUCCESS_ACCEPTED,
+  HTTP_STATUS_OK,
   HTTP_STATUS_SERVER_ERROR,
 } from '../../src/constants/http.status.constants.js';
 
@@ -79,7 +79,7 @@ describe('tax-calculator.controller', () => {
     await taxHandler({ body: { resource: { obj: validCart } } }, res);
 
     expect(taxForOrderMock).toHaveBeenCalledTimes(1);
-    expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_SUCCESS_ACCEPTED);
+    expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_OK);
     const [{ actions }] = res.send.mock.calls[0];
     expect(actions.some((a) => a.action === 'setLineItemTaxAmount')).toBe(true);
     expect(actions.some((a) => a.action === 'setCartTotalTax')).toBe(true);
@@ -92,7 +92,7 @@ describe('tax-calculator.controller', () => {
     await taxHandler({ body: { resource: { obj: emptyCart } } }, res);
 
     expect(taxForOrderMock).not.toHaveBeenCalled();
-    expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_SUCCESS_ACCEPTED);
+    expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_OK);
   });
 
   it('returns 400 when the Cart is missing a shippingAddress', async () => {

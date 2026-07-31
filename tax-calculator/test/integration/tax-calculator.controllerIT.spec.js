@@ -5,7 +5,7 @@ import configUtils from '../../src/utils/config.util.js';
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_UNAUTHORIZED,
-  HTTP_STATUS_SUCCESS_ACCEPTED,
+  HTTP_STATUS_OK,
 } from '../../src/constants/http.status.constants.js';
 
 /** Reminder : Please put mandatory environment variables in the settings of your github repository **/
@@ -68,7 +68,7 @@ describe('Test tax-calculator.controller.js', () => {
         },
       });
 
-    expect(response.statusCode).toEqual(HTTP_STATUS_SUCCESS_ACCEPTED);
+    expect(response.statusCode).toEqual(HTTP_STATUS_OK);
     expect(response.body.actions).toBeDefined();
   });
 

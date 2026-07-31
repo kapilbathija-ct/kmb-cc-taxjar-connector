@@ -3,7 +3,7 @@ import { logger } from '../utils/logger.utils.js';
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_SERVER_ERROR,
-  HTTP_STATUS_SUCCESS_ACCEPTED,
+  HTTP_STATUS_OK,
 } from '../constants/http.status.constants.js';
 import CustomError from '../errors/custom.error.js';
 import configUtils from '../utils/config.util.js';
@@ -41,7 +41,7 @@ export const taxHandler = async (request, response) => {
         : await getTaxJarClient().taxForOrder(buildTaxJarRequest(cart, config));
 
     const actions = buildCartUpdateActions(cart, taxJarResult);
-    return response.status(HTTP_STATUS_SUCCESS_ACCEPTED).send({ actions });
+    return response.status(HTTP_STATUS_OK).send({ actions });
   } catch (err) {
     logger.error(err);
 
