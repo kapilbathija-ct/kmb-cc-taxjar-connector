@@ -1,7 +1,14 @@
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import path from 'path';
 import _ from 'lodash';
 import { serializeError } from 'serialize-error';
 import { logger } from '../utils/logger.utils.js';
-import extensionTemplate from './../../resources/api-extension.json' assert { type: 'json' };
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const extensionTemplate = JSON.parse(
+  readFileSync(path.resolve(__dirname, '../../resources/api-extension.json'))
+);
 
 export async function createCTPExtension(
   apiRoot,

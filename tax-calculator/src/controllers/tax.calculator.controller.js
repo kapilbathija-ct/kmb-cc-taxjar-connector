@@ -38,9 +38,7 @@ export const taxHandler = async (request, response) => {
     const taxJarResult =
       taxableItemCount === 0
         ? { tax: { has_nexus: false } }
-        : await getTaxJarClient().taxForOrder(
-            buildTaxJarRequest(cart, config)
-          );
+        : await getTaxJarClient().taxForOrder(buildTaxJarRequest(cart, config));
 
     const actions = buildCartUpdateActions(cart, taxJarResult);
     return response.status(HTTP_STATUS_SUCCESS_ACCEPTED).send({ actions });

@@ -51,7 +51,11 @@ export function buildTaxJarOrderPayload(order, config) {
   const currencyFractionDigits = order.taxedPrice.totalGross.fractionDigits;
   const lineItemsSubtotal = (order.lineItems || []).reduce(
     (sum, lineItem) =>
-      sum + centsToDecimal(lineItem.totalPrice.centAmount, lineItem.totalPrice.fractionDigits),
+      sum +
+      centsToDecimal(
+        lineItem.totalPrice.centAmount,
+        lineItem.totalPrice.fractionDigits
+      ),
     0
   );
   const shipping = order.shippingInfo?.price

@@ -28,9 +28,15 @@ function buildCart(overrides = {}) {
         price: {
           value: { currencyCode: 'USD', centAmount: 1500, fractionDigits: 2 },
         },
-        totalPrice: { currencyCode: 'USD', centAmount: 3000, fractionDigits: 2 },
+        totalPrice: {
+          currencyCode: 'USD',
+          centAmount: 3000,
+          fractionDigits: 2,
+        },
         variant: {
-          attributes: [{ name: 'taxjarProductTaxCode', value: '99000000A0000' }],
+          attributes: [
+            { name: 'taxjarProductTaxCode', value: '99000000A0000' },
+          ],
         },
       },
       {
@@ -39,7 +45,11 @@ function buildCart(overrides = {}) {
         price: {
           value: { currencyCode: 'USD', centAmount: 4000, fractionDigits: 2 },
         },
-        totalPrice: { currencyCode: 'USD', centAmount: 4000, fractionDigits: 2 },
+        totalPrice: {
+          currencyCode: 'USD',
+          centAmount: 4000,
+          fractionDigits: 2,
+        },
         variant: { attributes: [] },
       },
     ],
@@ -81,10 +91,18 @@ describe('tax-calculation.service', () => {
             id: 'line3',
             quantity: 2,
             price: {
-              value: { currencyCode: 'USD', centAmount: 2000, fractionDigits: 2 },
+              value: {
+                currencyCode: 'USD',
+                centAmount: 2000,
+                fractionDigits: 2,
+              },
             },
             // Undiscounted total would be $40; Cart discount brought it to $36.
-            totalPrice: { currencyCode: 'USD', centAmount: 3600, fractionDigits: 2 },
+            totalPrice: {
+              currencyCode: 'USD',
+              centAmount: 3600,
+              fractionDigits: 2,
+            },
             variant: { attributes: [] },
           },
         ],
@@ -102,9 +120,7 @@ describe('tax-calculation.service', () => {
 
     it('throws a 400 CustomError when shippingAddress is missing', () => {
       const cart = buildCart({ shippingAddress: undefined });
-      expect(() => buildTaxJarRequest(cart, config)).toThrow(
-        /shippingAddress/
-      );
+      expect(() => buildTaxJarRequest(cart, config)).toThrow(/shippingAddress/);
     });
 
     it('throws a 400 CustomError when shippingAddress has no postalCode', () => {
@@ -236,9 +252,21 @@ describe('tax-calculation.service', () => {
       });
       expect(setCartTotalTax.externalTaxPortions).toEqual(
         expect.arrayContaining([
-          { name: 'State', rate: 0.0475, amount: { currencyCode: 'USD', centAmount: 356 } },
-          { name: 'County', rate: 0.0225, amount: { currencyCode: 'USD', centAmount: 169 } },
-          { name: 'Special District', rate: 0.005, amount: { currencyCode: 'USD', centAmount: 38 } },
+          {
+            name: 'State',
+            rate: 0.0475,
+            amount: { currencyCode: 'USD', centAmount: 356 },
+          },
+          {
+            name: 'County',
+            rate: 0.0225,
+            amount: { currencyCode: 'USD', centAmount: 169 },
+          },
+          {
+            name: 'Special District',
+            rate: 0.005,
+            amount: { currencyCode: 'USD', centAmount: 38 },
+          },
         ])
       );
       // Zero-amount jurisdictions (City here) are omitted, not sent as $0 portions.
@@ -266,9 +294,9 @@ describe('tax-calculation.service', () => {
         },
       });
 
-      expect(
-        actions.some((a) => a.action === 'setLineItemCustomType')
-      ).toBe(false);
+      expect(actions.some((a) => a.action === 'setLineItemCustomType')).toBe(
+        false
+      );
 
       const setCartTotalTax = actions.find(
         (a) => a.action === 'setCartTotalTax'

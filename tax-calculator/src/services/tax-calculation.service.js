@@ -18,11 +18,22 @@ function getProductTaxCode(lineItem) {
  * amount, not a pre-discounted unit price - derive the discount from the
  * gap between quantity*unitPrice and the Cart's already-discounted totalPrice.
  */
-function toTaxJarLineItem({ id, quantity, unitPriceCents, unitPriceFractionDigits, totalPriceCents, totalPriceFractionDigits, productTaxCode }) {
+function toTaxJarLineItem({
+  id,
+  quantity,
+  unitPriceCents,
+  unitPriceFractionDigits,
+  totalPriceCents,
+  totalPriceFractionDigits,
+  productTaxCode,
+}) {
   const unitPrice = centsToDecimal(unitPriceCents, unitPriceFractionDigits);
   const undiscountedTotal = unitPrice * quantity;
   const actualTotal = centsToDecimal(totalPriceCents, totalPriceFractionDigits);
-  const discount = Math.max(0, Number((undiscountedTotal - actualTotal).toFixed(2)));
+  const discount = Math.max(
+    0,
+    Number((undiscountedTotal - actualTotal).toFixed(2))
+  );
 
   const payload = { id, quantity, unit_price: unitPrice, discount };
   if (productTaxCode) {
@@ -161,7 +172,10 @@ export function buildCartUpdateActions(cart, taxJarResult) {
     const itemBreakdown = lineItemBreakdownById.get(lineItem.id);
     const netCents = lineItem.totalPrice.centAmount;
     const taxCents = itemBreakdown
-      ? decimalToCents(itemBreakdown.tax_collectable, lineItem.totalPrice.fractionDigits)
+      ? decimalToCents(
+          itemBreakdown.tax_collectable,
+          lineItem.totalPrice.fractionDigits
+        )
       : 0;
     const grossCents = netCents + taxCents;
 
@@ -170,7 +184,12 @@ export function buildCartUpdateActions(cart, taxJarResult) {
       lineItemId: lineItem.id,
       externalTaxAmount: {
         totalGross: { currencyCode, centAmount: grossCents },
-        taxRate: buildExternalTaxRate({ hasNexus, itemBreakdown, toCountry, toState }),
+        taxRate: buildExternalTaxRate({
+          hasNexus,
+          itemBreakdown,
+          toCountry,
+          toState,
+        }),
       },
     });
 
@@ -190,7 +209,10 @@ export function buildCartUpdateActions(cart, taxJarResult) {
     const itemBreakdown = lineItemBreakdownById.get(customLineItem.id);
     const netCents = customLineItem.totalPrice.centAmount;
     const taxCents = itemBreakdown
-      ? decimalToCents(itemBreakdown.tax_collectable, customLineItem.totalPrice.fractionDigits)
+      ? decimalToCents(
+          itemBreakdown.tax_collectable,
+          customLineItem.totalPrice.fractionDigits
+        )
       : 0;
     const grossCents = netCents + taxCents;
 
@@ -199,7 +221,12 @@ export function buildCartUpdateActions(cart, taxJarResult) {
       customLineItemId: customLineItem.id,
       externalTaxAmount: {
         totalGross: { currencyCode, centAmount: grossCents },
-        taxRate: buildExternalTaxRate({ hasNexus, itemBreakdown, toCountry, toState }),
+        taxRate: buildExternalTaxRate({
+          hasNexus,
+          itemBreakdown,
+          toCountry,
+          toState,
+        }),
       },
     });
 
@@ -213,14 +240,20 @@ export function buildCartUpdateActions(cart, taxJarResult) {
   // destination, which is the common case for this Cart's tax freeze point.
   const shippingEntries = cart.shippingInfo
     ? [{ shippingInfo: cart.shippingInfo, shippingKey: undefined }]
-    : (cart.shipping || []).map((s) => ({ shippingInfo: s.shippingInfo, shippingKey: s.shippingKey }));
+    : (cart.shipping || []).map((s) => ({
+        shippingInfo: s.shippingInfo,
+        shippingKey: s.shippingKey,
+      }));
 
   for (const { shippingInfo, shippingKey } of shippingEntries) {
     if (!shippingInfo?.price) continue;
 
     const netCents = shippingInfo.price.centAmount;
     const taxCents = breakdown?.shipping
-      ? decimalToCents(breakdown.shipping.tax_collectable, shippingInfo.price.fractionDigits)
+      ? decimalToCents(
+          breakdown.shipping.tax_collectable,
+          shippingInfo.price.fractionDigits
+        )
       : 0;
     const grossCents = netCents + taxCents;
 
@@ -229,7 +262,12 @@ export function buildCartUpdateActions(cart, taxJarResult) {
       ...(shippingKey ? { shippingKey } : {}),
       externalTaxAmount: {
         totalGross: { currencyCode, centAmount: grossCents },
-        taxRate: buildExternalTaxRate({ hasNexus, itemBreakdown: breakdown?.shipping, toCountry, toState }),
+        taxRate: buildExternalTaxRate({
+          hasNexus,
+          itemBreakdown: breakdown?.shipping,
+          toCountry,
+          toState,
+        }),
       },
     });
 
@@ -239,10 +277,26 @@ export function buildCartUpdateActions(cart, taxJarResult) {
   const externalTaxPortions = [];
   if (breakdown) {
     const portionDefs = [
-      { name: 'State', rateKey: 'state_tax_rate', amountKey: 'state_tax_collectable' },
-      { name: 'County', rateKey: 'county_tax_rate', amountKey: 'county_tax_collectable' },
-      { name: 'City', rateKey: 'city_tax_rate', amountKey: 'city_tax_collectable' },
-      { name: 'Special District', rateKey: 'special_tax_rate', amountKey: 'special_district_tax_collectable' },
+      {
+        name: 'State',
+        rateKey: 'state_tax_rate',
+        amountKey: 'state_tax_collectable',
+      },
+      {
+        name: 'County',
+        rateKey: 'county_tax_rate',
+        amountKey: 'county_tax_collectable',
+      },
+      {
+        name: 'City',
+        rateKey: 'city_tax_rate',
+        amountKey: 'city_tax_collectable',
+      },
+      {
+        name: 'Special District',
+        rateKey: 'special_tax_rate',
+        amountKey: 'special_district_tax_collectable',
+      },
     ];
     for (const { name, rateKey, amountKey } of portionDefs) {
       const amount = breakdown[amountKey];
@@ -250,7 +304,10 @@ export function buildCartUpdateActions(cart, taxJarResult) {
         externalTaxPortions.push({
           name,
           rate: breakdown[rateKey] || 0,
-          amount: { currencyCode, centAmount: decimalToCents(amount, cart.totalPrice.fractionDigits) },
+          amount: {
+            currencyCode,
+            centAmount: decimalToCents(amount, cart.totalPrice.fractionDigits),
+          },
         });
       }
     }

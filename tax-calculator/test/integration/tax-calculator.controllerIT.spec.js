@@ -52,8 +52,16 @@ describe('Test tax-calculator.controller.js', () => {
       .send({
         resource: {
           obj: {
-            totalPrice: { currencyCode: 'USD', centAmount: 0, fractionDigits: 2 },
-            shippingAddress: { country: 'US', state: 'NC', postalCode: '27701' },
+            totalPrice: {
+              currencyCode: 'USD',
+              centAmount: 0,
+              fractionDigits: 2,
+            },
+            shippingAddress: {
+              country: 'US',
+              state: 'NC',
+              postalCode: '27701',
+            },
             lineItems: [],
             customLineItems: [],
           },

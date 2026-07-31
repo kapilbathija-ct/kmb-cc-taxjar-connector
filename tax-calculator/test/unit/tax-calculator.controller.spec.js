@@ -81,9 +81,7 @@ describe('tax-calculator.controller', () => {
     expect(taxForOrderMock).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_SUCCESS_ACCEPTED);
     const [{ actions }] = res.send.mock.calls[0];
-    expect(actions.some((a) => a.action === 'setLineItemTaxAmount')).toBe(
-      true
-    );
+    expect(actions.some((a) => a.action === 'setLineItemTaxAmount')).toBe(true);
     expect(actions.some((a) => a.action === 'setCartTotalTax')).toBe(true);
   });
 

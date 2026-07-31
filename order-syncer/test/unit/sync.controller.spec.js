@@ -59,7 +59,11 @@ const taxedOrder = {
       totalPrice: { currencyCode: 'USD', centAmount: 3000, fractionDigits: 2 },
       taxedPrice: {
         totalNet: { currencyCode: 'USD', centAmount: 3000, fractionDigits: 2 },
-        totalGross: { currencyCode: 'USD', centAmount: 3225, fractionDigits: 2 },
+        totalGross: {
+          currencyCode: 'USD',
+          centAmount: 3225,
+          fractionDigits: 2,
+        },
         totalTax: { currencyCode: 'USD', centAmount: 225, fractionDigits: 2 },
       },
     },
@@ -97,7 +101,11 @@ describe('sync.controller', () => {
   it('acks non-OrderCreated / malformed messages without calling TaxJar', async () => {
     const res = mockResponse();
     await syncHandler(
-      { body: { message: { data: encodeJsonObject({ type: 'ProductCreated' }) } } },
+      {
+        body: {
+          message: { data: encodeJsonObject({ type: 'ProductCreated' }) },
+        },
+      },
       res
     );
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_SUCCESS_ACCEPTED);

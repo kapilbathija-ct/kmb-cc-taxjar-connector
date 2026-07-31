@@ -32,10 +32,22 @@ function buildOrder(overrides = {}) {
         price: {
           value: { currencyCode: 'USD', centAmount: 1500, fractionDigits: 2 },
         },
-        totalPrice: { currencyCode: 'USD', centAmount: 3000, fractionDigits: 2 },
+        totalPrice: {
+          currencyCode: 'USD',
+          centAmount: 3000,
+          fractionDigits: 2,
+        },
         taxedPrice: {
-          totalNet: { currencyCode: 'USD', centAmount: 3000, fractionDigits: 2 },
-          totalGross: { currencyCode: 'USD', centAmount: 3225, fractionDigits: 2 },
+          totalNet: {
+            currencyCode: 'USD',
+            centAmount: 3000,
+            fractionDigits: 2,
+          },
+          totalGross: {
+            currencyCode: 'USD',
+            centAmount: 3225,
+            fractionDigits: 2,
+          },
           totalTax: { currencyCode: 'USD', centAmount: 225, fractionDigits: 2 },
         },
       },

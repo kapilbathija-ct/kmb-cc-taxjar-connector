@@ -142,10 +142,5 @@ export const region = (path, message) => [
 
 export const usState = (path, message) => [
   path,
-  [
-    [
-      required((value) => /^[A-Z]{2}$/.test(String(value))),
-      message,
-    ],
-  ],
+  [[required((value) => /^[A-Z]{2}$/.test(String(value))), message]],
 ];
