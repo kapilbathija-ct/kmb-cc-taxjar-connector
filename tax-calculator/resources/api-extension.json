@@ -1,0 +1,15 @@
+{
+  "key": "${ctpTaxCalculatorExtensionKey}",
+  "destination": {
+    "type": "HTTP",
+    "url": "${ctpExtensionBaseUrl}"
+  },
+  "triggers": [
+    {
+      "resourceTypeId": "cart",
+      "actions": ["Update"],
+      "condition": "taxMode=\"ExternalAmount\" and cartState=\"Frozen\""
+    }
+  ],
+  "timeoutInMs": 2000
+}
