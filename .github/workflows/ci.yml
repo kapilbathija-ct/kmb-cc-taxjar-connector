@@ -12,6 +12,11 @@ jobs:
       CTP_PROJECT_KEY: ${{ secrets.CTP_PROJECT_KEY }}
       CTP_SCOPE: ${{ secrets.CTP_SCOPE }}
       CTP_REGION: ${{ secrets.CTP_REGION }}
+      TAX_PROVIDER_API_TOKEN: ${{ secrets.TAX_PROVIDER_API_TOKEN }}
+      TAX_PROVIDER_ENV: ${{ secrets.TAX_PROVIDER_ENV }}
+      TAXJAR_FROM_COUNTRY: ${{ secrets.TAXJAR_FROM_COUNTRY }}
+      TAXJAR_FROM_STATE: ${{ secrets.TAXJAR_FROM_STATE }}
+      EXTENSION_AUTH_TOKEN: ${{ secrets.EXTENSION_AUTH_TOKEN }}
     defaults:
       run:
         working-directory: tax-calculator
@@ -42,6 +47,11 @@ jobs:
       CTP_PROJECT_KEY: ${{ secrets.CTP_PROJECT_KEY }}
       CTP_SCOPE: ${{ secrets.CTP_SCOPE }}
       CTP_REGION: ${{ secrets.CTP_REGION }}
+      TAX_PROVIDER_API_TOKEN: ${{ secrets.TAX_PROVIDER_API_TOKEN }}
+      TAX_PROVIDER_ENV: ${{ secrets.TAX_PROVIDER_ENV }}
+      TAXJAR_FROM_COUNTRY: ${{ secrets.TAXJAR_FROM_COUNTRY }}
+      TAXJAR_FROM_STATE: ${{ secrets.TAXJAR_FROM_STATE }}
+      CONNECT_SUBSCRIPTION_DESTINATION: ${{ secrets.CONNECT_SUBSCRIPTION_DESTINATION }}
     defaults:
       run:
         working-directory: order-syncer

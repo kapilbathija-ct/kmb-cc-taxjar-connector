@@ -11,15 +11,7 @@ import {
  */
 const validDestinations = (path, message) => [
   path,
-  [
-    [
-      (value) =>
-        value === undefined ||
-        value === null ||
-        ['GoogleCloudPubSub', 'SNS'].includes(value),
-      message,
-    ],
-  ],
+  [[(value) => ['GoogleCloudPubSub', 'SNS'].includes(value), message]],
 ];
 
 const envValidators = [
