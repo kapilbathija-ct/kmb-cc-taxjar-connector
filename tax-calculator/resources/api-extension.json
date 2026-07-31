@@ -4,7 +4,7 @@
     "type": "HTTP",
     "url": "${ctpExtensionBaseUrl}",
     "authentication": {
-      "type": "AuthorizationHeaderAuthentication",
+      "type": "AuthorizationHeader",
       "headerValue": "Bearer ${extensionAuthToken}"
     }
   },
