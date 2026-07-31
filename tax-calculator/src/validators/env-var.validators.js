@@ -3,6 +3,7 @@ import {
   standardString,
   standardKey,
   region,
+  usState,
 } from './helpers.validators.js';
 
 /**
@@ -50,6 +51,54 @@ const envValidators = [
     message: 'Not a valid region.',
     referencedBy: 'environmentVariables',
   }),
+
+  standardString(
+    ['taxProviderApiToken'],
+    {
+      code: 'InvalidTaxProviderApiToken',
+      message: 'TAX_PROVIDER_API_TOKEN should be a valid TaxJar API token.',
+      referencedBy: 'environmentVariables',
+    },
+    { min: 20, max: 64 }
+  ),
+
+  standardString(
+    ['taxjarFromCountry'],
+    {
+      code: 'InvalidTaxjarFromCountry',
+      message: 'TAXJAR_FROM_COUNTRY should be a 2-letter ISO country code.',
+      referencedBy: 'environmentVariables',
+    },
+    { min: 2, max: 2 }
+  ),
+
+  usState(['taxjarFromState'], {
+    code: 'InvalidTaxjarFromState',
+    message:
+      'TAXJAR_FROM_STATE should be a 2-letter US state/province code matching your TaxJar nexus settings.',
+    referencedBy: 'environmentVariables',
+  }),
+
+  optional(standardString)(
+    ['taxjarFromZip'],
+    {
+      code: 'InvalidTaxjarFromZip',
+      message: 'TAXJAR_FROM_ZIP should be a valid postal code.',
+      referencedBy: 'environmentVariables',
+    },
+    { min: 3, max: 12 }
+  ),
+
+  standardString(
+    ['extensionAuthToken'],
+    {
+      code: 'InvalidExtensionAuthToken',
+      message:
+        'EXTENSION_AUTH_TOKEN should be a strong shared secret (min 16 characters) used to authenticate the commercetools API Extension request.',
+      referencedBy: 'environmentVariables',
+    },
+    { min: 16, max: 128 }
+  ),
 ];
 
 export default envValidators;

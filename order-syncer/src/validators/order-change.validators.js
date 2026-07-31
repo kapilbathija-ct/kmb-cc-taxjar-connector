@@ -18,11 +18,11 @@ export function doValidation(messageBody) {
     );
   }
 
-  // Make sure incoming message contains the identifier of the changed product
+  // Make sure incoming message is for an Order and carries its identifier
   const resourceTypeId = messageBody?.resource?.typeId;
   const resourceId = messageBody?.resource?.id;
 
-  if (resourceTypeId !== 'order' && !resourceId) {
+  if (resourceTypeId !== 'order' || !resourceId) {
     throw new CustomError(
       HTTP_STATUS_SUCCESS_ACCEPTED,
       ` No order ID is found in message.`

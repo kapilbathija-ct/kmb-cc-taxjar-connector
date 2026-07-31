@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node src/index.js",
     "start:dev": "nodemon -q src/index.js",
+    "connector:post-deploy": "node src/connectors/post-deploy.js",
+    "connector:pre-undeploy": "node src/connectors/pre-undeploy.js",
     "lint": "eslint src --ext .js",
     "prettier": "prettier --write '**/*.{js,ts}'",
     "prettier:check": "prettier --check '**/*.{js,ts}'",
@@ -38,7 +40,7 @@
     "lodash": "^4.17.23",
     "mocha": "^10.7.0",
     "serialize-error": "^11.0.3",
-    "stripe": "^16.2.0",
+    "taxjar": "^4.1.0",
     "supertest": "^7.0.0",
     "validator": "^13.12.0"
   },

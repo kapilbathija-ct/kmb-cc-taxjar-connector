@@ -6,13 +6,15 @@ import extensionTemplate from './../../resources/api-extension.json' assert { ty
 export async function createCTPExtension(
   apiRoot,
   ctpTaxCalculatorExtensionKey,
-  ctpExtensionBaseUrl
+  ctpExtensionBaseUrl,
+  extensionAuthToken
 ) {
   try {
     const extensionDraft = JSON.parse(
       _.template(JSON.stringify(extensionTemplate))({
         ctpTaxCalculatorExtensionKey,
         ctpExtensionBaseUrl,
+        extensionAuthToken,
       })
     );
 

@@ -8,12 +8,14 @@ import {
 async function postDeploy(properties) {
   //The URL of deployed connector could be obtained via env-var CONNECT_SERVICE_URL after deployment.
   const ctpExtensionBaseUrl = properties.get(CONNECT_SERVICE_URL);
+  const extensionAuthToken = properties.get('EXTENSION_AUTH_TOKEN');
 
   const apiRoot = createApiRoot();
   await createCTPExtension(
     apiRoot,
     CTP_TAX_CALCULATOR_EXTENSION_KEY,
-    ctpExtensionBaseUrl
+    ctpExtensionBaseUrl,
+    extensionAuthToken
   );
 }
 

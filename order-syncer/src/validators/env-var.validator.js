@@ -3,6 +3,7 @@ import {
   standardString,
   standardKey,
   region,
+  usState,
 } from './helpers.validator.js';
 
 /**
@@ -64,16 +65,6 @@ const envValidators = [
     referencedBy: 'environmentVariables',
   }),
 
-  standardString(
-    ['connectSubscriptionDestination'],
-    {
-      code: 'InvalidSubscriptionDestination',
-      message: 'Subscription destination is required.',
-      referencedBy: 'environmentVariables',
-    },
-    { min: 2, max: 10 }
-  ),
-
   validDestinations(['connectSubscriptionDestination'], {
     code: 'InvalidSubscriptionDestination',
     message:
@@ -110,6 +101,23 @@ const envValidators = [
     },
     { min: 2, max: undefined }
   ),
+
+  standardString(
+    ['taxProviderApiToken'],
+    {
+      code: 'InvalidTaxProviderApiToken',
+      message: 'TAX_PROVIDER_API_TOKEN should be a valid TaxJar API token.',
+      referencedBy: 'environmentVariables',
+    },
+    { min: 20, max: 64 }
+  ),
+
+  usState(['taxjarFromState'], {
+    code: 'InvalidTaxjarFromState',
+    message:
+      'TAXJAR_FROM_STATE should be a 2-letter US state/province code matching your TaxJar nexus settings.',
+    referencedBy: 'environmentVariables',
+  }),
 ];
 
 export default envValidators;

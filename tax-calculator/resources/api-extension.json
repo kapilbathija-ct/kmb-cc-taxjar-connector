@@ -2,7 +2,11 @@
   "key": "${ctpTaxCalculatorExtensionKey}",
   "destination": {
     "type": "HTTP",
-    "url": "${ctpExtensionBaseUrl}"
+    "url": "${ctpExtensionBaseUrl}",
+    "authentication": {
+      "type": "AuthorizationHeaderAuthentication",
+      "headerValue": "Bearer ${extensionAuthToken}"
+    }
   },
   "triggers": [
     {

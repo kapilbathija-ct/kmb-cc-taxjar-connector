@@ -3,6 +3,14 @@ inheritAs:
     standardConfiguration:
       - key: CTP_REGION
         description: region of commercetools composable commerce project
+      - key: TAX_PROVIDER_ENV
+        description: "TaxJar environment to call: 'sandbox' (default) or 'live'"
+      - key: TAXJAR_FROM_COUNTRY
+        description: ISO country code of the merchant's ship-from / nexus address (e.g. US)
+      - key: TAXJAR_FROM_STATE
+        description: 2-letter state/province code of the merchant's TaxJar nexus address
+      - key: TAXJAR_FROM_ZIP
+        description: Optional postal code of the merchant's ship-from address, for more precise rate lookups
     securedConfiguration:
       - key: CTP_PROJECT_KEY
         description: project key from commercetools composable commerce project
@@ -19,10 +27,13 @@ deployAs:
     applicationType: service
     endpoint: /taxCalculator
     scripts:
-      postDeploy: npm install
+      postDeploy: npm install && npm run connector:post-deploy
+      preUndeploy: npm install && npm run connector:pre-undeploy
     configuration:
       standardConfiguration: []
-      securedConfiguration: []
+      securedConfiguration:
+        - key: EXTENSION_AUTH_TOKEN
+          description: Shared secret used to authenticate the commercetools API Extension's calls to this connector
   - name: order-syncer
     applicationType: event
     endpoint: /orderSyncer
@@ -30,5 +41,7 @@ deployAs:
       postDeploy: npm install && npm run connector:post-deploy
       preUndeploy: npm install && npm run connector:pre-undeploy
     configuration:
-      standardConfiguration: []
+      standardConfiguration:
+        - key: CONNECT_SUBSCRIPTION_DESTINATION
+          description: "Subscription destination type matching the deployment region's cloud: 'GoogleCloudPubSub' (GCP regions) or 'SNS' (AWS regions)"
       securedConfiguration: []
