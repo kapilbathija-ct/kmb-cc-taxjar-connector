@@ -46,6 +46,18 @@
     "lodash": "^4.17.23",
     "brace-expansion": "^5.0.9",
     "minimatch": "^10.2.6",
-    "glob": "^13.0.6"
+    "glob": "^13.0.6",
+    "babel-jest": {
+      "babel-plugin-istanbul": {
+        "@istanbuljs/load-nyc-config": {
+          "js-yaml": "^3.15.1"
+        }
+      }
+    },
+    "eslint": {
+      "@eslint/eslintrc": {
+        "js-yaml": "^4.3.1"
+      }
+    }
   }
 }
