@@ -26,6 +26,7 @@ function mockResponse() {
   const res = {};
   res.status = jest.fn().mockReturnValue(res);
   res.send = jest.fn().mockReturnValue(res);
+  res.json = res.send; // the controller serialises errors with res.json; assertions read res.send
   return res;
 }
 
