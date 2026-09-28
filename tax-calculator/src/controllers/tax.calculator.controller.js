@@ -45,8 +45,18 @@ export const taxHandler = async (request, response) => {
   } catch (err) {
     logger.error(err);
 
+    // Error.message is a non-enumerable own property, so `res.send(err)` serialised a CustomError as
+    // `{"statusCode":400}` and commercetools rejected it as "Extension response body does not contain
+    // valid JSON" (a 4xx extension response must carry `errors[]`). Serialise explicitly.
+    const sendError = (status, message, errors) =>
+      response.status(status).json({
+        statusCode: status,
+        message,
+        errors: errors || [{ code: 'InvalidInput', message }],
+      });
+
     if (err.statusCode) {
-      return response.status(err.statusCode).send(err);
+      return sendError(err.statusCode, err.message, err.errors);
     }
 
     // The TaxJar SDK rejects with { status, error, detail } rather than an
@@ -60,13 +70,15 @@ export const taxHandler = async (request, response) => {
         err.status >= 400 && err.status < 500
           ? HTTP_STATUS_BAD_REQUEST
           : HTTP_STATUS_SERVER_ERROR;
-      const taxJarError = new CustomError(
+      return sendError(
         status,
         `TaxJar error: ${err.detail || err.error || err.message}`
       );
-      return response.status(status).send(taxJarError);
     }
 
-    return response.status(HTTP_STATUS_SERVER_ERROR).send(err);
+    return sendError(
+      HTTP_STATUS_SERVER_ERROR,
+      err.message || 'Tax calculation failed'
+    );
   }
 };
