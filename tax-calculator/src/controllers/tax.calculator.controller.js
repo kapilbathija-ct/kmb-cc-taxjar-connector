@@ -53,11 +53,18 @@ export const taxHandler = async (request, response) => {
     // Error carrying statusCode - surface its message without leaking the
     // raw SDK error shape to the caller.
     if (err.status) {
+      // A TaxJar 4xx (bad address, unsupported state name, missing zip) is
+      // the caller's problem: surface it as 400 so commercetools reports the
+      // message instead of an opaque ExtensionBadResponse.
+      const status =
+        err.status >= 400 && err.status < 500
+          ? HTTP_STATUS_BAD_REQUEST
+          : HTTP_STATUS_SERVER_ERROR;
       const taxJarError = new CustomError(
-        HTTP_STATUS_SERVER_ERROR,
+        status,
         `TaxJar error: ${err.detail || err.error || err.message}`
       );
-      return response.status(HTTP_STATUS_SERVER_ERROR).send(taxJarError);
+      return response.status(status).send(taxJarError);
     }
 
     return response.status(HTTP_STATUS_SERVER_ERROR).send(err);

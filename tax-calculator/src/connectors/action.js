@@ -89,6 +89,17 @@ function buildUpdateActions(existingExtension, extensionDraft) {
       triggers: extensionDraft.triggers,
     });
 
+  // Cold starts exceed the template's 2 s default; keep the live Extension in
+  // sync with the draft's timeout instead of relying on a manual setTimeoutInMs.
+  if (
+    extensionDraft.timeoutInMs &&
+    existingExtension.timeoutInMs !== extensionDraft.timeoutInMs
+  )
+    actions.push({
+      action: 'setTimeoutInMs',
+      timeoutInMs: extensionDraft.timeoutInMs,
+    });
+
   return actions;
 }
 

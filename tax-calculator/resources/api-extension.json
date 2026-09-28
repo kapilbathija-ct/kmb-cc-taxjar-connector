@@ -15,5 +15,5 @@
       "condition": "taxMode=\"ExternalAmount\" and cartState=\"Frozen\""
     }
   ],
-  "timeoutInMs": 2000
+  "timeoutInMs": 10000
 }

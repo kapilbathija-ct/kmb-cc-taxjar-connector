@@ -6,6 +6,7 @@ import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_OK,
   HTTP_STATUS_SERVER_ERROR,
+  HTTP_STATUS_BAD_REQUEST,
 } from '../../src/constants/http.status.constants.js';
 
 jest.mock('../../src/utils/config.util.js', () => ({
@@ -105,7 +106,7 @@ describe('tax-calculator.controller', () => {
     expect(taxForOrderMock).not.toHaveBeenCalled();
   });
 
-  it('returns 500 with the TaxJar error surfaced when the TaxJar SDK rejects', async () => {
+  it('returns 400 with the TaxJar error surfaced when the TaxJar SDK rejects with a 4xx', async () => {
     taxForOrderMock.mockRejectedValue({
       status: 422,
       error: 'Unprocessable Entity',
@@ -115,7 +116,7 @@ describe('tax-calculator.controller', () => {
     const res = mockResponse();
     await taxHandler({ body: { resource: { obj: validCart } } }, res);
 
-    expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_SERVER_ERROR);
+    expect(res.status).toHaveBeenCalledWith(HTTP_STATUS_BAD_REQUEST);
     const [sentError] = res.send.mock.calls[0];
     expect(sentError.message).toMatch(/to_zip is not valid/);
   });
