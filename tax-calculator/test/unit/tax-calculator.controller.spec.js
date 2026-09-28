@@ -6,7 +6,6 @@ import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_OK,
   HTTP_STATUS_SERVER_ERROR,
-  HTTP_STATUS_BAD_REQUEST,
 } from '../../src/constants/http.status.constants.js';
 
 jest.mock('../../src/utils/config.util.js', () => ({
