@@ -26,6 +26,7 @@ export default function readConfiguration() {
     taxjarFromCountry: process.env.TAXJAR_FROM_COUNTRY || 'US',
     taxjarFromState: process.env.TAXJAR_FROM_STATE,
     taxjarFromZip: process.env.TAXJAR_FROM_ZIP,
+    orderSyncSince: process.env.ORDER_SYNC_SINCE,
   };
 
   const validationErrors = getValidateMessages(envValidators, envVars);

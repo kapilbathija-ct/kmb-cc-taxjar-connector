@@ -44,4 +44,6 @@ deployAs:
       standardConfiguration:
         - key: CONNECT_SUBSCRIPTION_DESTINATION
           description: "Subscription destination type matching the deployment region's cloud: 'GoogleCloudPubSub' (GCP regions) or 'SNS' (AWS regions)"
+        - key: ORDER_SYNC_SINCE
+          description: "Optional ISO timestamp: orders created before it are acknowledged without a TaxJar sync (drains a replayed backlog)"
       securedConfiguration: []

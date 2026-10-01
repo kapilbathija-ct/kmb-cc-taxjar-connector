@@ -46,7 +46,12 @@ export const syncHandler = async (request, response) => {
     const orderId = messageBody?.resource?.id;
     logger.info(`Received OrderCreated message for order ${orderId}.`);
     const order = await getOrderById(orderId);
-    if (order) {
+    // ORDER_SYNC_SINCE (ISO date) acknowledges older orders without calling TaxJar. Failed deliveries are retried, so
+    // after an outage the backlog replays at once and can exhaust the account's rate limit, starving live tax calls.
+    const since = readConfiguration().orderSyncSince;
+    if (order && since && order.createdAt < since) {
+      logger.info(`Order ${orderId} created before ORDER_SYNC_SINCE (${since}) - skipping TaxJar sync.`);
+    } else if (order) {
       await syncToTaxProvider(order);
     }
   } catch (err) {
