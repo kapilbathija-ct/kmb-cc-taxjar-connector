@@ -66,6 +66,15 @@ function customLineItemToTaxJarPayload(customLineItem) {
 }
 
 /**
+ * The shipping amount actually charged: a shipping Cart Discount (free shipping)
+ * lowers it, and commercetools nets the shipping tax against this amount, not
+ * the list price.
+ */
+function chargedShippingPrice(shippingInfo) {
+  return shippingInfo?.discountedPrice?.value ?? shippingInfo?.price;
+}
+
+/**
  * Builds the request body for TaxJar's POST /v2/taxes ("Calculate sales tax
  * for an order"), from the frozen Cart that triggered the API Extension.
  */
@@ -84,8 +93,9 @@ export function buildTaxJarRequest(cart, config) {
     );
   }
 
-  const shippingCents = cart.shippingInfo?.price?.centAmount || 0;
-  const shippingFractionDigits = cart.shippingInfo?.price?.fractionDigits ?? 2;
+  const shippingPrice = chargedShippingPrice(cart.shippingInfo);
+  const shippingCents = shippingPrice?.centAmount || 0;
+  const shippingFractionDigits = shippingPrice?.fractionDigits ?? 2;
 
   const lineItems = [
     ...(cart.lineItems || []).map(lineItemToTaxJarPayload),
@@ -246,13 +256,14 @@ export function buildCartUpdateActions(cart, taxJarResult) {
       }));
 
   for (const { shippingInfo, shippingKey } of shippingEntries) {
-    if (!shippingInfo?.price) continue;
+    const shippingPrice = chargedShippingPrice(shippingInfo);
+    if (!shippingPrice) continue;
 
-    const netCents = shippingInfo.price.centAmount;
+    const netCents = shippingPrice.centAmount;
     const taxCents = breakdown?.shipping
       ? decimalToCents(
           breakdown.shipping.tax_collectable,
-          shippingInfo.price.fractionDigits
+          shippingPrice.fractionDigits
         )
       : 0;
     const grossCents = netCents + taxCents;

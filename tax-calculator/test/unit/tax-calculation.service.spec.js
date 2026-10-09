@@ -129,6 +129,18 @@ describe('tax-calculation.service', () => {
       });
       expect(() => buildTaxJarRequest(cart, config)).toThrow(/postalCode/);
     });
+
+    it('sends the discounted shipping amount when a shipping discount applies', () => {
+      const cart = buildCart({
+        shippingInfo: {
+          price: { currencyCode: 'USD', centAmount: 500, fractionDigits: 2 },
+          discountedPrice: {
+            value: { currencyCode: 'USD', centAmount: 0, fractionDigits: 2 },
+          },
+        },
+      });
+      expect(buildTaxJarRequest(cart, config).shipping).toBe(0);
+    });
   });
 
   describe('buildCartUpdateActions', () => {
@@ -306,6 +318,79 @@ describe('tax-calculation.service', () => {
         centAmount: 7500,
       });
       expect(setCartTotalTax.externalTaxPortions).toEqual([]);
+    });
+    it('nets shipping tax against the discounted shipping amount (free shipping is not booked as tax)', () => {
+      const cart = buildCart({
+        totalPrice: {
+          currencyCode: 'USD',
+          centAmount: 7000,
+          fractionDigits: 2,
+        },
+        shippingInfo: {
+          price: { currencyCode: 'USD', centAmount: 500, fractionDigits: 2 },
+          discountedPrice: {
+            value: { currencyCode: 'USD', centAmount: 0, fractionDigits: 2 },
+          },
+        },
+      });
+      const freeShippingResult = {
+        tax: {
+          ...nexusTaxJarResult.tax,
+          breakdown: {
+            ...nexusTaxJarResult.tax.breakdown,
+            shipping: {
+              ...nexusTaxJarResult.tax.breakdown.shipping,
+              tax_collectable: 0,
+            },
+          },
+        },
+      };
+      const actions = buildCartUpdateActions(cart, freeShippingResult);
+
+      expect(actions).toContainEqual({
+        action: 'setShippingMethodTaxAmount',
+        externalTaxAmount: {
+          totalGross: { currencyCode: 'USD', centAmount: 0 },
+          taxRate: expect.objectContaining({ amount: 0.075 }),
+        },
+      });
+      const setCartTotalTax = actions.find(
+        (a) => a.action === 'setCartTotalTax'
+      );
+      expect(setCartTotalTax.externalTotalGross).toEqual({
+        currencyCode: 'USD',
+        centAmount: 3225 + 4300,
+      });
+    });
+
+    it('books no shipping tax out of nexus when shipping is free', () => {
+      const cart = buildCart({
+        totalPrice: {
+          currencyCode: 'USD',
+          centAmount: 7000,
+          fractionDigits: 2,
+        },
+        shippingInfo: {
+          price: { currencyCode: 'USD', centAmount: 500, fractionDigits: 2 },
+          discountedPrice: {
+            value: { currencyCode: 'USD', centAmount: 0, fractionDigits: 2 },
+          },
+        },
+      });
+      const actions = buildCartUpdateActions(cart, {
+        tax: { has_nexus: false },
+      });
+      expect(actions).toContainEqual({
+        action: 'setShippingMethodTaxAmount',
+        externalTaxAmount: {
+          totalGross: { currencyCode: 'USD', centAmount: 0 },
+          taxRate: expect.objectContaining({ amount: 0 }),
+        },
+      });
+      const setCartTotalTax = actions.find(
+        (a) => a.action === 'setCartTotalTax'
+      );
+      expect(setCartTotalTax.externalTotalGross.centAmount).toBe(7000);
     });
   });
 });
